@@ -14,6 +14,7 @@ using YALV.Common.Interfaces;
 using YALV.Core;
 using YALV.Core.Domain;
 using YALV.Properties;
+using Ookii.Dialogs.Wpf;
 
 namespace YALV.ViewModel
 {
@@ -186,25 +187,26 @@ namespace YALV.ViewModel
 
         protected virtual object commandSelectFolderExecute(object parameter)
         {
-            using (System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog())
+            VistaFolderBrowserDialog dlg = new VistaFolderBrowserDialog();
+            dlg.Description = Resources.MainWindowVM_commandSelectFolderExecute_Description;
+            dlg.UseDescriptionForTitle = true;
+
+            if (dlg.ShowDialog() == true)
             {
-                dlg.Description = Resources.MainWindowVM_commandSelectFolderExecute_Description;
-                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                string selectedPath = dlg.SelectedPath;
+                SelectedFolder = null;
+                for (int i = 0; i < FolderList.Count; i++)
                 {
-                    string selectedPath = dlg.SelectedPath;
-                    SelectedFolder = null;
-                    for (int i = 0; i < FolderList.Count; i++)
+                    PathItem item = FolderList[i];
+                    if (item.Path.Equals(selectedPath, StringComparison.OrdinalIgnoreCase))
                     {
-                        PathItem item = FolderList[i];
-                        if (item.Path.Equals(selectedPath, StringComparison.OrdinalIgnoreCase))
-                        {
-                            SelectedFolder = item;
-                            return null;
-                        }
+                        SelectedFolder = item;
+                        return null;
                     }
-                    loadFolderFiles(selectedPath);
                 }
+                loadFolderFiles(selectedPath);
             }
+            
             return null;
         }
 

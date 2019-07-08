@@ -9,6 +9,7 @@ using YALV.Common.Interfaces;
 using YALV.Core;
 using YALV.Core.Domain;
 using YALV.Properties;
+using Ookii.Dialogs.Wpf;
 
 namespace YALV.ViewModel
 {
@@ -153,12 +154,15 @@ namespace YALV.ViewModel
 
         protected virtual object commandSelectFolderExecute(object parameter)
         {
-            using (System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog())
+            VistaFolderBrowserDialog dlg = new VistaFolderBrowserDialog();
+            dlg.Description = "Select Log Folder";
+            dlg.UseDescriptionForTitle = true;
+
+            if (dlg.ShowDialog() == true && SelectedPath != null)
             {
-                dlg.Description = "Select Log Folder";
-                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK && SelectedPath != null)
-                    SelectedPath.Path = dlg.SelectedPath;
+                SelectedPath.Path = dlg.SelectedPath;
             }
+            
             return null;
         }
 
